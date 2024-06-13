@@ -1,0 +1,9 @@
+venv/
+.venv/
+__pycache__/
+.vscode/
+.lprof/
+.env
+result.json
+models/*_Modelfile
+config.json

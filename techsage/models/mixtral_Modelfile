@@ -1,0 +1,4 @@
+FROM mixtral
+PARAMETER temperature 0.8
+PARAMETER stop Result
+SYSTEM """"""
