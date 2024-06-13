@@ -16,4 +16,3 @@ def launch() -> None:
         print(result)
     except Exception as e:
         print(f" ❌ An error occured during the search:\n{e}\n{traceback.format_exc()}")
-        print(f" ❌ An error occured during the search:\n{e}\n{traceback.format_exc()}")

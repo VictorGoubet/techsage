@@ -106,7 +106,7 @@ def fallback_on_env(value: str, env_name: str) -> Optional[str]:
     :return Optional[str]: The processed value
     """
     if value is None or str(value).lower().strip() in ["none", "", "na"]:
-        value = os.environ.get(env_name, "")
+        value = os.environ.get(env_name, "NA")
     return value
 
 

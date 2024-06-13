@@ -137,5 +137,4 @@ class CompanyTasks:
                 """
             ),
             agent=agent,
-            output_file="./result.json",
         )
