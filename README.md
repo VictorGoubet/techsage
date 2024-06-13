@@ -31,7 +31,7 @@ configure-sage
 
 - `--model <your-model-name>`: The name of the model you want to use (default is `llama3:8b`).
 
-- `--verbose <1 or 0>`: The level of verbose you want (default is 0).
+- `--verbose <1 or 0>`: The level of verbose you want during the configuration (default is 0).
 
 - `--local <True or False>`: Define if you want to use a local model with Ollama or an OpenAI API model (default is True).
 - `--openai_api_key <key>`: Your openai api key. Required if you disabled local mode or if you want to use the crew memory (improve performance), you can also let this empty and export `OPENAI_API_KEY`.
