@@ -2,11 +2,20 @@ import json
 import os
 import subprocess
 import sys
+from pprint import pprint
 from typing import Optional
 
 import click
 
+from techsage.utils.constants import APP_FOLDER
+
 VERBOSE = 0
+
+
+def create_app_folder() -> None:
+    """Create the folder of techsage if not existing"""
+    os.makedirs(APP_FOLDER, exist_ok=True)
+    os.makedirs(f"{APP_FOLDER}/models", exist_ok=True)
 
 
 def check_ollama_installed() -> None:
@@ -22,26 +31,6 @@ def check_ollama_installed() -> None:
         print(" ✅ Ollama is available")
     except (subprocess.CalledProcessError, FileNotFoundError):
         print(" ❌ 'ollama' is not installed. Please install it first.")
-        sys.exit(1)
-
-
-def get_model_name(file_path: str) -> str:
-    """
-    Get the model name from the specified model file.
-
-    :param str file_path: The path to the model file.
-    :return str: The model name extracted from the file.
-    :raises FileNotFoundError: If the model file is not found.
-    :raises ValueError: If the model name is not found in the file.
-    """
-    try:
-        with open(file_path, "r") as file:
-            for line in file:
-                if line.startswith("FROM "):
-                    return line.split()[1]
-        raise ValueError("Model name not found in the file.")
-    except FileNotFoundError as e:
-        print(f" ❌ Model file not found: {e}")
         sys.exit(1)
 
 
@@ -143,9 +132,12 @@ def save_config(model_name: str, openai_api_key: str, google_search_api_key: str
         "OPENAI_API_KEY": openai_api_key,
         "GOOGLE_SEARCH_API_KEY": google_search_api_key,
     }
-    with open("./config.json", "w") as f:
+    with open(f"{APP_FOLDER}/config.json", "w") as f:
         json.dump(config, f)
-    print(" ✅ Upserted environment variables in .env")
+    print(f" ✅ Configuration saved in {APP_FOLDER}")
+    if VERBOSE:
+        pprint(config)
+    return config
 
 
 @click.command()
@@ -158,14 +150,14 @@ def save_config(model_name: str, openai_api_key: str, google_search_api_key: str
     default="true",
     help="Set to True if using a local model with ollama, False for OpenAI API model",
 )
-@click.option("--verbose", "-v", default=0, help="0 to not see setup details, 1 otherwise")
+@click.option("--verbose", "-v", default=0, help="0 to not see configuration details, 1 otherwise")
 def main(model: str, openai_api_key: str, google_search_api_key: str, local: str, verbose: int) -> None:
     """
-    Main function to orchestrate the setup process: installing dependencies,
+    Main function to orchestrate the configuration process: installing dependencies,
     checking if ollama is installed, pulling a model, and creating a new model.
 
     :param str model: The name of the local model to use.
-    :param str openai_api_key: The api key of open ai to use (for llm if not local and/or for memory mode), default local mode
+    :param str openai_api_key: The openai key to use (for llm if not local and/or for memory mode), default local mode
     :param str google_search_api_key: The delpha google search api key (if api google search mode), default local mode
     :param str local: Flag indicating if the model is local or from OpenAI API.
     :param int verbose: 0 if no verbose 1 otherwise
@@ -173,15 +165,13 @@ def main(model: str, openai_api_key: str, google_search_api_key: str, local: str
     global VERBOSE
     VERBOSE = verbose
     local = local.lower().strip() == "true"
-    print(" ⚙️ Setup started..")
+    print(" ⚙️ Configuration started..")
+    create_app_folder()
     if local:
         check_ollama_installed()
-        model_config_file_path = create_model_file(model, "./techsage/models/")
+        model_config_file_path = create_model_file(model, f"{APP_FOLDER}/models/")
         pull_model(model)
         crewai_model_name = create_model(f"{model}_crewai", model_config_file_path)
     else:
         crewai_model_name = model
     save_config(crewai_model_name, openai_api_key, google_search_api_key, local)
-    print(" ✅ Setup completed successfully!")
-    print(" ✅ Setup completed successfully!")
-    print(" ✅ Setup completed successfully!")

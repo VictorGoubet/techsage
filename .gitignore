@@ -5,5 +5,4 @@ __pycache__/
 .lprof/
 .env
 result.json
-models/*_Modelfile
 config.json

@@ -1,6 +1,7 @@
 from crewai import Agent
-from llm import llm
-from tools import google_search_tool, scrap_website_tool
+
+from techsage.llm import llm
+from techsage.tools import google_search_tool, scrap_website_tool
 
 
 class CompanyAgents:

@@ -1,10 +1,11 @@
 import os
 from typing import Dict
 
-from agents import CompanyAgents
 from crewai import Agent, Crew, Process, Task
-from llm import llm
-from tasks import CompanyTasks
+
+from techsage.agents import CompanyAgents
+from techsage.llm import llm
+from techsage.tasks import CompanyTasks
 
 
 class CompanyCrew:
@@ -77,4 +78,5 @@ class CompanyCrew:
         agents = self._initialize_agents()
         tasks = self._initialize_tasks(agents)
         result = self._initialize_and_run_crew(tasks, agents)
+        return result
         return result

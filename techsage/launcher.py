@@ -1,21 +1,13 @@
-import json
-import os
 import traceback
 
-from crew import CompanyCrew
-
-
-def load_config() -> None:
-    """Load the current configuration"""
-    with open("./config.json", "r") as f:
-        for k, v in json.load(f):
-            os.environ[k] = v
+import techsage.utils.load_config
+from techsage.crew import CompanyCrew
 
 
 def launch() -> None:
     """Launch the process"""
     try:
-        load_config()
+
         print("\n 👋 Welcome to Company Information Gatherer")
         print("---------------------------------------------")
         company_name = input("Company name:  ")

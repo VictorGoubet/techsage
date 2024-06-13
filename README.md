@@ -19,16 +19,14 @@ pip install git+https://github.com/VictorGoubet/techsage.git
 
 
 - Python >=3.10,<=3.13
-- `ollama` (if using a local model)
+- `ollama` (if using a local model) [install here](https://ollama.com/download/)
 - OpenAI API key (if using a model from OpenAI or using crew memory)
 - Delpha google search API key (if using API-based Google search)
 
-## Setup ⚙️
-
-Run the setup script to install additional dependencies and configure the environment:
+## Configure ⚙️
 
 ```bash
-setup-sage
+configure-sage
 ```
 
 - `--model <your-model-name>`: The name of the model you want to use (default is `llama3:8b`).
