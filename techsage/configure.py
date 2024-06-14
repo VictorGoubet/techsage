@@ -155,7 +155,7 @@ def configure(
     google_search_api_key: str = "NA",
     local: str = "true",
     verbose: int = 0,
-    model_url: Optional[str] = None,
+    model_url: str = "http://localhost:11434/v1",
 ) -> None:
     """
     Main function to orchestrate the configuration process: installing dependencies,
@@ -166,7 +166,7 @@ def configure(
     :param str google_search_api_key: The delpha google search api key (if api google search mode), default local mode
     :param str local: Flag indicating if the model is local or from OpenAI API.
     :param int verbose: 0 if no verbose 1 otherwise
-    :param Optional[str] model_url: The api url of the model, default based on local
+    :param str model_url: The api url of the model, default based on local
     """
     global VERBOSE
     VERBOSE = verbose
