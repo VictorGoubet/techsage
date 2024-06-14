@@ -1,7 +1,6 @@
 import os
-import sys
 import traceback
-from typing import List
+from typing import Callable, List, Union
 
 import streamlit as st
 
@@ -25,7 +24,7 @@ class TechSageChatApp:
         st.title("👋 Welcome to TechSage Information Gatherer")
 
         self.chat_placeholder = st.empty()
-        self.chat_history: List[str] = []
+        self.chat_history: List[dict] = []
 
         with st.sidebar:
             st.title("Settings")
@@ -41,11 +40,7 @@ class TechSageChatApp:
             with col2:
                 self.load_setting_button = st.button("Refresh", on_click=self._load_current_config)
 
-        user_input_col, send_button_col = st.columns([8, 1])
-        with user_input_col:
-            user_input = st.text_input("Enter a topic:", key="user_input")
-        with send_button_col:
-            st.button("Send", on_click=self._send_message)
+        st.chat_input("Kubernetes last trends", key="user_input", on_submit=self._send_message)
 
     def _save_config(self) -> None:
         """Save the current configuration"""
@@ -73,37 +68,51 @@ class TechSageChatApp:
         if "local" not in st.session_state:
             st.session_state["local"] = os.environ.get("LOCAL", "true").lower() == "true"
 
-    def _add_to_chat(self, message: str, is_user: bool = True) -> None:
+    def _add_to_chat(self, message: Union[str, Callable], is_user: bool = True) -> None:
         """Add a message to the chat history and update the UI
 
-        :param str message: The message to add
+        :param Union[str, Callable] message: The message to add or the method that will create the message
         :param bool is_user: Whether the message is from the user or the bot
         """
         if is_user:
-            self.chat_history.append(f"**You:** {message}")
+            self.chat_history.append({"user": "You", "message": message, "avatar": "🧑‍💻"})
         else:
-            self.chat_history.append(f"**TechSage:** {ansi_to_html(message)}")
+            self.chat_history.append({"user": "TechSage", "message": message, "avatar": "🤖"})
         self._display_chat()
 
     def _display_chat(self) -> None:
         """Display the chat history in the Streamlit app"""
         with self.chat_placeholder.container():
-            for message in self.chat_history:
-                st.markdown(message, unsafe_allow_html=True)
+            for i, message in enumerate(self.chat_history):
+                with st.chat_message(message["user"], avatar=message["avatar"]):
+                    if callable(message["message"]):
+                        with st.status("Thinking..."):
+                            message["message"] = message["message"]()
+                    st.write(ansi_to_html(message["message"]))
+                self.chat_history[i] = message
 
     def _send_message(self) -> None:
         """Send the message that is in the bar"""
         if st.session_state.user_input.strip() != "":
             topic = st.session_state.user_input
             self._add_to_chat(topic, is_user=True)
-            st.session_state.user_input = ""  # Clear the input field
             try:
-                techsage_crew = TechSageCrew(topic)
-                result = techsage_crew.run()
-                self._add_to_chat(result, is_user=False)
+                promise = lambda: self.get_topic_info(topic)
+                self._add_to_chat(promise, is_user=False)
             except Exception as e:
                 error_message = f"❌ An error occurred during the search:\n{e}\n{traceback.format_exc()}"
                 self._add_to_chat(error_message, is_user=False)
+
+    def get_topic_info(self, topic: str) -> str:
+        """Get the topic info of the current topic using multi agent system
+
+        :param str topic: The topic value
+        :return str: The collected info on the topic
+        """
+        techsage_crew = TechSageCrew(topic)
+        result = techsage_crew.run()
+        print(result)
+        return result
 
 
 def main() -> None:
