@@ -6,6 +6,30 @@
 
 TechSage is a simple multi-agent LLM platform designed to deliver daily insights on technology, programming, architecture, and more. It utilizes either OpenAI's LLMs or local models via Ollama, ensuring flexibility. Powered by CrewAI's multi-agent system, TechSage automates the retrieval of the latest trends and knowledge given a topic, keeping you informed and ahead in the tech world.
 
+
+
+# Docker 🐋
+
+You can install techsage using the provided docker image:
+
+```bash
+docker run -p 8501:8501 victorgoubet/techsage:latest
+```
+
+and go on 
+
+```
+http://localhost:8501
+```
+
+# Pip 📦
+
+
+## Prerequisites 💡 
+
+- Python >=3.10,<=3.13
+- `ollama` (if using a local model) [install here](https://ollama.com/download/)
+
 ## Installation 🛠️
 
 You can install TechSage via pip:
@@ -15,17 +39,9 @@ pip install git+https://github.com/VictorGoubet/techsage.git
 ```
 
 
-## Prerequisites 💡 
+## Configure [optional] ⚙️
 
-
-- Python >=3.10,<=3.13
-- `ollama` (if using a local model) [install here](https://ollama.com/download/)
-- OpenAI API key (if using a model from OpenAI or using crew memory)
-- Delpha google search API key (if using API-based Google search)
-
-## Configure ⚙️
-
-Execute this command only if you want to use the shell interface. If you plan to use the streamlit interface you can configure everything directly on it.
+Execute this command only if you want to use the shell interface and with specific configuration. If you plan to use the streamlit interface you can configure everything directly on it.
 
 ```bash
 configure-sage
@@ -41,7 +57,7 @@ configure-sage
 
 - `--openai_api_key <key>`: Your openai api key. Required if you disabled local mode or if you want to use the crew memory (improve performance).
 
-- `--google_search_api_key <key>`: Your delpha google search api key. If empty a local google search will be perform, however, Google can quickly detect you and ban your IP. Note that only the Delpha Google Search API is supported. Feel free to modify the `api_google_search` method in `tools.py` if you want to use another API.
+- `--google_search_api_key <key>`: Your delpha google search api key. If empty a local google search will be perform, however, Google can quickly detect you and ban your IP. Note that only the Delpha Google Search API is supported. Feel free to modify the `api_google_search` method in `tools.py` if you want to use another API. A duckduckgo tool is also available so the agents may use this tools if something is not working with google.
 
 
 ## Launch 🚀

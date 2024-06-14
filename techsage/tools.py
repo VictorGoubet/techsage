@@ -6,6 +6,7 @@ from urllib.parse import urlencode
 import requests
 from bs4 import BeautifulSoup
 from crewai_tools import tool
+from duckduckgo_search import ddg
 from lxml import etree
 
 
@@ -42,9 +43,20 @@ Chrome/96.0.4664.110 Safari/537.36",
         return f"Error scraping website: {e}"
 
 
+@tool("An alternative to google searching tool")
+def duckduckgo_search_tool(search_value: str) -> str:
+    """Perform a duckduckgo search with the given search_value.
+
+    :param str search_value: The value to use as input for the search
+    :return Optional[str]: The google HTML results
+    """
+    res = "\n".join(ddg(search_value))
+    return res
+
+
 @tool("Google Searching tool")
 def google_search_tool(search_value: str) -> Optional[str]:
-    """Perform a google search with the given search value
+    """Perform a google search with the given search_value
 
     :param str search_value: The value to use as input for the search
     :return Optional[str]: The google HTML results, None if something failed
