@@ -110,13 +110,20 @@ def fallback_on_env(value: str, env_name: str) -> Optional[str]:
     return value
 
 
-def save_config(model_name: str, openai_api_key: str, google_search_api_key: str, local: bool) -> None:
+def save_config(
+    model_name: str,
+    openai_api_key: str,
+    google_search_api_key: str,
+    local: bool,
+    model_url: Optional[str] = None,
+) -> None:
     """Save the current configuration
 
     :param str model_name: The name of the crewai model.
     :param str openai_api_key: The api key of open ai to use
     :param str google_search_api_key: The delpha google search api key
     :param bool local: Flag indicating if the model is local or from OpenAI API.
+    :param Optional[str] model_url: The api url of the model, default based on local
     """
     openai_api_key = fallback_on_env(openai_api_key, "OPENAI_API_KEY")
     google_search_api_key = fallback_on_env(google_search_api_key, "GOOGLE_SEARCH_API_KEY")
@@ -127,7 +134,7 @@ def save_config(model_name: str, openai_api_key: str, google_search_api_key: str
 
     config = {
         "LOCAL": str(local).lower(),
-        "OPENAI_API_BASE": "http://localhost:11434/v1" if local else "",
+        "OPENAI_API_BASE": model_url if model_url else "http://localhost:11434/v1" if local else "",
         "OPENAI_MODEL_NAME": model_name,
         "OPENAI_API_KEY": openai_api_key,
         "GOOGLE_SEARCH_API_KEY": google_search_api_key,
@@ -138,6 +145,40 @@ def save_config(model_name: str, openai_api_key: str, google_search_api_key: str
     if VERBOSE:
         pprint(config)
     return config
+
+
+def configure(
+    model: str,
+    openai_api_key: str,
+    google_search_api_key: str,
+    local: str,
+    verbose: int,
+    model_url: Optional[str] = None,
+) -> None:
+    """
+    Main function to orchestrate the configuration process: installing dependencies,
+    checking if ollama is installed, pulling a model, and creating a new model.
+
+    :param str model: The name of the local model to use.
+    :param str openai_api_key: The openai key to use (for llm if not local and/or for memory mode), default local mode
+    :param str google_search_api_key: The delpha google search api key (if api google search mode), default local mode
+    :param str local: Flag indicating if the model is local or from OpenAI API.
+    :param int verbose: 0 if no verbose 1 otherwise
+    :param Optional[str] model_url: The api url of the model, default based on local
+    """
+    global VERBOSE
+    VERBOSE = verbose
+    local = str(local).lower().strip() == "true"
+    print(" ⚙️ Configuration started..")
+    create_app_folder()
+    if local:
+        check_ollama_installed()
+        model_config_file_path = create_model_file(model, f"{APP_FOLDER}/models/")
+        pull_model(model)
+        crewai_model_name = create_model(f"{model}_crewai", model_config_file_path)
+    else:
+        crewai_model_name = model
+    save_config(crewai_model_name, openai_api_key, google_search_api_key, local, model_url)
 
 
 @click.command()
@@ -151,27 +192,13 @@ def save_config(model_name: str, openai_api_key: str, google_search_api_key: str
     help="Set to True if using a local model with ollama, False for OpenAI API model",
 )
 @click.option("--verbose", "-v", default=0, help="0 to not see configuration details, 1 otherwise")
-def main(model: str, openai_api_key: str, google_search_api_key: str, local: str, verbose: int) -> None:
-    """
-    Main function to orchestrate the configuration process: installing dependencies,
-    checking if ollama is installed, pulling a model, and creating a new model.
-
-    :param str model: The name of the local model to use.
-    :param str openai_api_key: The openai key to use (for llm if not local and/or for memory mode), default local mode
-    :param str google_search_api_key: The delpha google search api key (if api google search mode), default local mode
-    :param str local: Flag indicating if the model is local or from OpenAI API.
-    :param int verbose: 0 if no verbose 1 otherwise
-    """
-    global VERBOSE
-    VERBOSE = verbose
-    local = local.lower().strip() == "true"
-    print(" ⚙️ Configuration started..")
-    create_app_folder()
-    if local:
-        check_ollama_installed()
-        model_config_file_path = create_model_file(model, f"{APP_FOLDER}/models/")
-        pull_model(model)
-        crewai_model_name = create_model(f"{model}_crewai", model_config_file_path)
-    else:
-        crewai_model_name = model
-    save_config(crewai_model_name, openai_api_key, google_search_api_key, local)
+@click.option("--model_url", "-mu", default=None, help="The api url of the model")
+def main(
+    model: str,
+    openai_api_key: str,
+    google_search_api_key: str,
+    local: str,
+    verbose: int,
+    model_url: Optional[str] = None,
+) -> None:
+    configure(model, openai_api_key, google_search_api_key, local, verbose, model_url)

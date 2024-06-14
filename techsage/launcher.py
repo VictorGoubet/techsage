@@ -1,9 +1,12 @@
+import subprocess
 import traceback
 
 import click
 
-import techsage.utils.load_config
-from techsage.app import TechSageChatApp
+from techsage.utils.constants import LIB_FOLDER
+from techsage.utils.load_config import load_config
+
+load_config()
 from techsage.crew import TechSageCrew
 
 
@@ -20,8 +23,7 @@ def launch(streamlit: bool) -> None:
     :param bool streamlit: If True the streamlit will be launched, otherwise a shell version will be launched
     """
     if streamlit:
-        app = TechSageChatApp()
-        app.run()
+        subprocess.run(["streamlit", "run", f"{LIB_FOLDER}/app.py"])
     else:
         launch_in_shell()
 

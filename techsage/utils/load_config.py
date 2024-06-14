@@ -9,6 +9,3 @@ def load_config() -> None:
     with open(f"{APP_FOLDER}/config.json", "r") as f:
         for k, v in json.load(f).items():
             os.environ[k] = str(v)
-
-
-load_config()
