@@ -46,7 +46,7 @@ configure-sage
 
 ## Launch 🚀
 
-After setting up, launch the script:
+After setting up, launch the script, if you didn't configure anything it will perform the default configuration:
 
 ```sh
 launch-sage

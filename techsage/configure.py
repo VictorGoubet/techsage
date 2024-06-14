@@ -150,11 +150,11 @@ def save_config(
 
 
 def configure(
-    model: str,
-    openai_api_key: str,
-    google_search_api_key: str,
-    local: str,
-    verbose: int,
+    model: str = "llama3:8b",
+    openai_api_key: str = "NA",
+    google_search_api_key: str = "NA",
+    local: str = "true",
+    verbose: int = 0,
     model_url: Optional[str] = None,
 ) -> None:
     """

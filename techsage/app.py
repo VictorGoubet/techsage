@@ -1,6 +1,6 @@
 import os
 import traceback
-from typing import Callable, List, Union
+from typing import Callable, Union
 
 import streamlit as st
 
