@@ -8,7 +8,7 @@ import streamlit as st
 from techsage.configure import configure
 from techsage.crew import TechSageCrew
 from techsage.utils.load_config import load_config
-from techsage.utils.stream_to_io import _StreamToStringIO
+from techsage.utils.tools import ansi_to_html
 
 
 class TechSageChatApp:
@@ -16,8 +16,8 @@ class TechSageChatApp:
 
     def __init__(self) -> None:
         """Initialize the app"""
+        self._load_current_config()
         self._initialize_streamlit_ui()
-        self.original_stdout = sys.stdout
 
     def _initialize_streamlit_ui(self) -> None:
         """Initialize the Streamlit user interface"""
@@ -29,39 +29,23 @@ class TechSageChatApp:
 
         with st.sidebar:
             st.title("Settings")
-            self.model = st.text_input(
-                "Model",
-                value=self._add_to_state("", "model"),
-                key="model",
-            )
-            self.model_url = st.text_input(
-                "Model URL",
-                value=self._add_to_state("", "model_url"),
-                key="model_url",
-            )
-            self.openai_key = st.text_input(
-                "OpenAI API Key",
-                value=self._add_to_state("", "openai_key"),
-                key="openai_key",
-            )
-            self.google_key = st.text_input(
-                "Google Search API Key",
-                value=self._add_to_state("", "google_key"),
-                key="google_key",
-            )
-            self.local = st.checkbox("Local", value=self._add_to_state(True, "local"), key="local,")
-            self.setting_button = st.button("Save", on_click=self._save_config)
-            self.load_setting_button = st.button("Load current", on_click=self._load_config)
 
-    def _add_to_state(self, value: str, name: str) -> None:
-        """Add a value into the state
+            st.text_input("Model", key="model")
+            st.text_input("Model URL", key="model_url")
+            st.text_input("OpenAI API Key", key="openai_key")
+            st.text_input("Google Search API Key", key="google_key")
+            st.checkbox("Local", key="local")
+            col1, col2 = st.columns(2)
+            with col1:
+                self.setting_button = st.button("Save", on_click=self._save_config)
+            with col2:
+                self.load_setting_button = st.button("Refresh", on_click=self._load_current_config)
 
-        :param str value: The value to add
-        :param str name: The name of the value
-        """
-        if name not in st.session_state:
-            st.session_state[name] = value
-        return st.session_state[name]
+        user_input_col, send_button_col = st.columns([8, 1])
+        with user_input_col:
+            user_input = st.text_input("Enter a topic:", key="user_input")
+        with send_button_col:
+            st.button("Send", on_click=self._send_message)
 
     def _save_config(self) -> None:
         """Save the current configuration"""
@@ -76,13 +60,18 @@ class TechSageChatApp:
         except Exception as e:
             print(f" ❌ Error saving the configuration: {e}")
 
-    def _load_config(self) -> None:
+    def _load_current_config(self) -> None:
         """Load the current configuration into the UI"""
-        st.session_state["model"] = os.environ.get("OPENAI_MODEL_NAME", "llama3:8b")
-        st.session_state["model_url"] = os.environ.get("OPENAI_API_BASE", "NA")
-        st.session_state["openai_key"] = os.environ.get("OPENAI_API_KEY", "NA")
-        st.session_state["google_key"] = os.environ.get("GOOGLE_SEARCH_API_KEY", "NA")
-        st.session_state["local"] = os.environ.get("LOCAL", "true").lower() == "true"
+        if "model" not in st.session_state:
+            st.session_state["model"] = os.environ.get("BASE_MODEL_NAME", "llama3:8b")
+        if "model_url" not in st.session_state:
+            st.session_state["model_url"] = os.environ.get("OPENAI_API_BASE", "NA")
+        if "openai_key" not in st.session_state:
+            st.session_state["openai_key"] = os.environ.get("OPENAI_API_KEY", "NA")
+        if "google_key" not in st.session_state:
+            st.session_state["google_key"] = os.environ.get("GOOGLE_SEARCH_API_KEY", "NA")
+        if "local" not in st.session_state:
+            st.session_state["local"] = os.environ.get("LOCAL", "true").lower() == "true"
 
     def _add_to_chat(self, message: str, is_user: bool = True) -> None:
         """Add a message to the chat history and update the UI
@@ -93,42 +82,24 @@ class TechSageChatApp:
         if is_user:
             self.chat_history.append(f"**You:** {message}")
         else:
-            self.chat_history.append(f"**TechSage:** {message}")
-
+            self.chat_history.append(f"**TechSage:** {ansi_to_html(message)}")
         self._display_chat()
 
     def _display_chat(self) -> None:
         """Display the chat history in the Streamlit app"""
         with self.chat_placeholder.container():
             for message in self.chat_history:
-                st.markdown(message)
+                st.markdown(message, unsafe_allow_html=True)
 
-    def _capture_print_output(self) -> _StreamToStringIO:
-        """Capture print output during the execution of a block of code
-
-        :return _StreamToStringIO: The stream to capture print output
-        """
-        captured_output = _StreamToStringIO()
-        sys.stdout = captured_output
-        return captured_output
-
-    def _release_print_output(self) -> None:
-        """Release the print output capture and restore original stdout"""
-        sys.stdout = self.original_stdout
-
-    def run(self) -> None:
-        """Run the chat application"""
-        user_input = st.text_input("Your message:", key="user_input")
-        if user_input:
-            self._add_to_chat(user_input, is_user=True)
+    def _send_message(self) -> None:
+        """Send the message that is in the bar"""
+        if st.session_state.user_input.strip() != "":
+            topic = st.session_state.user_input
+            self._add_to_chat(topic, is_user=True)
+            st.session_state.user_input = ""  # Clear the input field
             try:
-                topic = user_input
                 techsage_crew = TechSageCrew(topic)
-                captured_output = self._capture_print_output()
                 result = techsage_crew.run()
-                self._release_print_output()
-                print_output = captured_output.getvalue()
-                self._add_to_chat(print_output, is_user=False)
                 self._add_to_chat(result, is_user=False)
             except Exception as e:
                 error_message = f"❌ An error occurred during the search:\n{e}\n{traceback.format_exc()}"
@@ -137,8 +108,7 @@ class TechSageChatApp:
 
 def main() -> None:
     """Main function to run the Streamlit app"""
-    app = TechSageChatApp()
-    app.run()
+    TechSageChatApp()
 
 
 if __name__ == "__main__":

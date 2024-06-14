@@ -122,7 +122,7 @@ class TechSageTasks:
                 - Relevant examples and case studies
                 - A concluding summary
 
-                Ensure the content is ready for publication or further distribution.
+                Ensure the format is compatible with chat format because it will be directly sent into a chat.
                 """
             ),
             agent=agent,

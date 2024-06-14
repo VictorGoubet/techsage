@@ -98,19 +98,19 @@ def create_model_file(model_name: str, folder_path: str) -> str:
         sys.exit(1)
 
 
-def fallback_on_env(value: str, env_name: str) -> Optional[str]:
-    """Return the value if not None, otherwise try to use the environement value
+def handle_na(value: str) -> Optional[str]:
+    """Detect if a value is null and set it to the default nan value
 
     :param str value: The value to check for
-    :param str env_name: The name of the environment variable containing the fallback value
     :return Optional[str]: The processed value
     """
     if value is None or str(value).lower().strip() in ["none", "", "na"]:
-        value = os.environ.get(env_name, "NA")
+        value = "NA"
     return value
 
 
 def save_config(
+    base_model_name: str,
     model_name: str,
     openai_api_key: str,
     google_search_api_key: str,
@@ -119,22 +119,24 @@ def save_config(
 ) -> None:
     """Save the current configuration
 
+    :param str base_model_name: The name of the base model
     :param str model_name: The name of the crewai model.
     :param str openai_api_key: The api key of open ai to use
     :param str google_search_api_key: The delpha google search api key
     :param bool local: Flag indicating if the model is local or from OpenAI API.
     :param Optional[str] model_url: The api url of the model, default based on local
     """
-    openai_api_key = fallback_on_env(openai_api_key, "OPENAI_API_KEY")
-    google_search_api_key = fallback_on_env(google_search_api_key, "GOOGLE_SEARCH_API_KEY")
+    openai_api_key = handle_na(openai_api_key)
+    google_search_api_key = handle_na(google_search_api_key)
 
-    if not local and openai_api_key == "":
+    if not local and openai_api_key == "NA":
         print(" ❌ OPENAI_API_KEY environment variable not set.")
         sys.exit(1)
 
     config = {
         "LOCAL": str(local).lower(),
-        "OPENAI_API_BASE": model_url if model_url else "http://localhost:11434/v1" if local else "",
+        "OPENAI_API_BASE": model_url if local else "",
+        "BASE_MODEL_NAME": base_model_name,
         "OPENAI_MODEL_NAME": model_name,
         "OPENAI_API_KEY": openai_api_key,
         "GOOGLE_SEARCH_API_KEY": google_search_api_key,
@@ -178,13 +180,13 @@ def configure(
         crewai_model_name = create_model(f"{model}_crewai", model_config_file_path)
     else:
         crewai_model_name = model
-    save_config(crewai_model_name, openai_api_key, google_search_api_key, local, model_url)
+    save_config(model, crewai_model_name, openai_api_key, google_search_api_key, local, model_url)
 
 
 @click.command()
 @click.option("--model", "-m", default="llama3:8b", help="The name of the model you want to use")
-@click.option("--openai_api_key", "-oak", default="", help="Your openai api key")
-@click.option("--google_search_api_key", "-gsak", default="", help="Your delpha google search api key")
+@click.option("--openai_api_key", "-oak", default="NA", help="Your openai api key")
+@click.option("--google_search_api_key", "-gsak", default="NA", help="Your delpha google search api key")
 @click.option(
     "--local",
     "-l",
@@ -192,7 +194,7 @@ def configure(
     help="Set to True if using a local model with ollama, False for OpenAI API model",
 )
 @click.option("--verbose", "-v", default=0, help="0 to not see configuration details, 1 otherwise")
-@click.option("--model_url", "-mu", default=None, help="The api url of the model")
+@click.option("--model_url", "-mu", default="http://localhost:11434/v1", help="The api url of the model")
 def main(
     model: str,
     openai_api_key: str,
