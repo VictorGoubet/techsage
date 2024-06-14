@@ -23,8 +23,8 @@ class TechSageChatApp:
         st.set_page_config(page_title="TechSage Chat", layout="wide")
         st.title("👋 Welcome to TechSage Information Gatherer")
 
-        self.chat_placeholder = st.empty()
-        self.chat_history: List[dict] = []
+        if "chat_history" not in st.session_state:
+            st.session_state.chat_history = []
 
         with st.sidebar:
             st.title("Settings")
@@ -36,11 +36,13 @@ class TechSageChatApp:
             st.checkbox("Local", key="local")
             col1, col2 = st.columns(2)
             with col1:
-                self.setting_button = st.button("Save", on_click=self._save_config)
+                st.button("Save", on_click=self._save_config)
             with col2:
-                self.load_setting_button = st.button("Refresh", on_click=self._load_current_config)
+                st.button("Refresh", on_click=self._load_current_config)
 
-        st.chat_input("Kubernetes last trends", key="user_input", on_submit=self._send_message)
+        self._display_chat_history()
+        if prompt := st.chat_input("Kubernetes.."):
+            self._send_message(prompt)
 
     def _save_config(self) -> None:
         """Save the current configuration"""
@@ -68,6 +70,23 @@ class TechSageChatApp:
         if "local" not in st.session_state:
             st.session_state["local"] = os.environ.get("LOCAL", "true").lower() == "true"
 
+    def _display_chat_history(self) -> None:
+        """Display the chat history in the Streamlit app"""
+        for i, message in enumerate(st.session_state.chat_history):
+            self._display_message(message)
+            st.session_state.chat_history[i] = message
+
+    def _display_message(self, message: dict) -> None:
+        """Display a message
+
+        :param dict message: The message to display
+        """
+        with st.chat_message(message["role"], avatar=message["avatar"]):
+            if callable(message["message"]):
+                with st.status("Thinking..."):
+                    message["message"] = message["message"]()
+            st.write(ansi_to_html(message["message"]))
+
     def _add_to_chat(self, message: Union[str, Callable], is_user: bool = True) -> None:
         """Add a message to the chat history and update the UI
 
@@ -75,29 +94,21 @@ class TechSageChatApp:
         :param bool is_user: Whether the message is from the user or the bot
         """
         if is_user:
-            self.chat_history.append({"user": "You", "message": message, "avatar": "🧑‍💻"})
+            message = {"role": "You", "message": message, "avatar": "🧑‍💻"}
         else:
-            self.chat_history.append({"user": "TechSage", "message": message, "avatar": "🤖"})
-        self._display_chat()
+            message = {"role": "TechSage", "message": message, "avatar": "🤖"}
+        st.session_state.chat_history.append(message)
+        self._display_message(message)
 
-    def _display_chat(self) -> None:
-        """Display the chat history in the Streamlit app"""
-        with self.chat_placeholder.container():
-            for i, message in enumerate(self.chat_history):
-                with st.chat_message(message["user"], avatar=message["avatar"]):
-                    if callable(message["message"]):
-                        with st.status("Thinking..."):
-                            message["message"] = message["message"]()
-                    st.write(ansi_to_html(message["message"]))
-                self.chat_history[i] = message
+    def _send_message(self, message: str) -> None:
+        """Send the message that is in the bar
 
-    def _send_message(self) -> None:
-        """Send the message that is in the bar"""
-        if st.session_state.user_input.strip() != "":
-            topic = st.session_state.user_input
-            self._add_to_chat(topic, is_user=True)
+        :param str message: The message to send
+        """
+        if message.strip() != "":
+            self._add_to_chat(message, is_user=True)
             try:
-                promise = lambda: self.get_topic_info(topic)
+                promise = lambda: self.get_topic_info(message)
                 self._add_to_chat(promise, is_user=False)
             except Exception as e:
                 error_message = f"❌ An error occurred during the search:\n{e}\n{traceback.format_exc()}"
