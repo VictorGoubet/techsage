@@ -4,7 +4,7 @@
 
 # TechSage 🤖
 
-TechSage is an advanced multi-agent LLM platform designed to deliver daily insights on technology, programming, architecture, and more. It utilizes both OpenAI's LLMs and local models via Ollama, ensuring flexibility and performance. Powered by CrewAI's multi-agent system, TechSage automates the retrieval of the latest trends and knowledge, keeping you informed and ahead in the tech world.
+TechSage is a simple multi-agent LLM platform designed to deliver daily insights on technology, programming, architecture, and more. It utilizes either OpenAI's LLMs or local models via Ollama, ensuring flexibility. Powered by CrewAI's multi-agent system, TechSage automates the retrieval of the latest trends and knowledge given a topic, keeping you informed and ahead in the tech world.
 
 ## Installation 🛠️
 

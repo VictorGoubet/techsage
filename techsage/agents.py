@@ -4,7 +4,7 @@ from techsage.llm import llm
 from techsage.tools import google_search_tool, scrap_website_tool
 
 
-class CompanyAgents:
+class TechSageAgents:
     """Definition of all the agents of the insight bot"""
 
     def searcher(self) -> Agent:
@@ -14,7 +14,8 @@ class CompanyAgents:
         """
         return Agent(
             role="Searcher",
-            goal="Find relevant sources of information through Google searches.",
+            goal="Find relevant sources of information through Google searches on technology,\
+            programming, and architecture.",
             backstory="""
             An experienced internet researcher with a keen eye for relevant sources. You are
             adept at finding accurate and useful information from various online sources.
@@ -45,17 +46,17 @@ class CompanyAgents:
             llm=llm,
         )
 
-    def validator(self) -> Agent:
-        """An agent dedicated to result validation
+    def content_generator(self) -> Agent:
+        """An agent dedicated to generating insightful content
 
         :return Agent: The created agent
         """
         return Agent(
-            role="Validator",
-            goal="Check the relevancy, accuracy, and coherence of the retrieved data.",
+            role="Content Generator",
+            goal="Generate insightful content based on the latest trends and information.",
             backstory="""
-            A meticulous data analyst who ensures the integrity and accuracy of information.
-            You are thorough in verifying data consistency and completeness.
+            A creative and knowledgeable content creator who excels at producing engaging and\
+            informative articles and reports.
             """,
             cache=True,
             verbose=1,

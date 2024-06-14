@@ -3,51 +3,51 @@ from typing import Dict
 
 from crewai import Agent, Crew, Process, Task
 
-from techsage.agents import CompanyAgents
+from techsage.agents import TechSageAgents
 from techsage.llm import llm
-from techsage.tasks import CompanyTasks
+from techsage.tasks import TechSageTasks
 
 
-class CompanyCrew:
+class TechSageCrew:
     """Definition of the crew of the insight bot"""
 
-    def __init__(self, company_name: str) -> None:
+    def __init__(self, topic: str) -> None:
         """Initialize the crew
 
-        :param str company_name: The company name on which should work the crew
+        :param str topic: The topic on which the crew should work
         """
-        self.company_name = company_name
+        self.topic = topic
 
     def _initialize_agents(self) -> dict:
-        """Initiliaze all the agents
+        """Initialize all the agents
 
         :return dict: The created agents
         """
-        agents = CompanyAgents()
+        agents = TechSageAgents()
         return {
             "searcher": agents.searcher(),
             "scraper": agents.scraper(),
-            "validator": agents.validator(),
+            "content_generator": agents.content_generator(),
         }
 
     def _initialize_tasks(self, agents: Dict[str, Agent]) -> dict:
-        """Initiliaze all the tasks
+        """Initialize all the tasks
 
-        :param Dict[str, Agent] agents: The availables agents
+        :param Dict[str, Agent] agents: The available agents
         :return dict: The created tasks
         """
-        tasks = CompanyTasks(self.company_name)
+        tasks = TechSageTasks(self.topic)
         return {
             "search": tasks.search_task(agents["searcher"]),
-            "scraper": tasks.scrape_task(agents["scraper"]),
-            "validate": tasks.validate_task(agents["validator"]),
+            "scrape": tasks.scrape_task(agents["scraper"]),
+            "generate_content": tasks.generate_content_task(agents["content_generator"]),
         }
 
     def _initialize_and_run_crew(self, tasks: Dict[str, Task], agents: Dict[str, Agent]) -> str:
         """Initialize the crew and kick off
 
         :param Dict[str, Task] tasks: The tasks to do
-        :param Dict[str, Agent] agents: The availables agents
+        :param Dict[str, Agent] agents: The available agents
         :return str: The result of the kick off
         """
         is_openai_setup = os.environ.get("OPENAI_API_KEY", "") not in ["", "NA"]
@@ -63,9 +63,9 @@ class CompanyCrew:
         )
         result = crew.kickoff(
             {
-                "topic": "Data enrichment",
+                "topic": self.topic,
                 "quality_standard": "high",
-                "goal": "Retrieve public info on a given company",
+                "goal": "Retrieve and generate insights on the latest trends in technology, programming, and archi.",
             }
         )
         return result
@@ -78,5 +78,4 @@ class CompanyCrew:
         agents = self._initialize_agents()
         tasks = self._initialize_tasks(agents)
         result = self._initialize_and_run_crew(tasks, agents)
-        return result
         return result
