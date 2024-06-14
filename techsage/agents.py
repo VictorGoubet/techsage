@@ -5,7 +5,7 @@ from techsage.tools import google_search_tool, scrap_website_tool
 
 
 class TechSageAgents:
-    """Definition of all the agents of the insight bot"""
+    """Definition of all the agents"""
 
     def searcher(self) -> Agent:
         """An agent dedicated to google search

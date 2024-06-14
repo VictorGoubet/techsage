@@ -4,7 +4,7 @@ from crewai import Agent, Task
 
 
 class TechSageTasks:
-    """Definition of the tasks of the insight bot"""
+    """Definition of the tasks"""
 
     def __init__(self, topic: str) -> None:
         """Initialize the tasks

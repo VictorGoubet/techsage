@@ -9,7 +9,7 @@ from techsage.tasks import TechSageTasks
 
 
 class TechSageCrew:
-    """Definition of the crew of the insight bot"""
+    """Definition of the crew"""
 
     def __init__(self, topic: str) -> None:
         """Initialize the crew
