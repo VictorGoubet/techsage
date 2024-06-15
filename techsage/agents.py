@@ -15,7 +15,7 @@ class TechSageAgents:
         return Agent(
             role="Searcher",
             goal="Find relevant sources of information through Google searches on technology,\
-            programming, and architecture.",
+            programming, and cloud architecture.",
             backstory="""
             An experienced internet researcher with a keen eye for relevant sources. You are
             adept at finding accurate and useful information from various online sources.

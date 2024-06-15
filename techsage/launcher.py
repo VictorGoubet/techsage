@@ -33,7 +33,7 @@ def launch_in_shell() -> None:
     try:
         print("\n 👋 Welcome to TechSage Information Gatherer")
         print("---------------------------------------------")
-        topic = input("Topic (e.g., Technology, Programming, Architecture):  ")
+        topic = input("Topic (e.g., Technology, Programming, Cloud Architecture):  ")
         techsage_crew = TechSageCrew(topic)
         result = techsage_crew.run()
         print(result)

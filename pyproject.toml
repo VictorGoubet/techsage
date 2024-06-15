@@ -1,7 +1,7 @@
 [tool.poetry]
 name = "techsage"
 version = "0.1.0"
-description = "Leverage the power of multi-agent AI to fuel your daily tech, programming, and architecture insights."
+description = "Leverage the power of multi-agent AI to fuel your daily tech, programming, and cloud architecture insights."
 authors = ["victor <victorgoubet@orange.fr>"]
 readme = "README.md"
 

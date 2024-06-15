@@ -25,7 +25,7 @@ class TechSageTasks:
                     Search for relevant websites and sources on Google where we could find
                     accurate and trustworthy information about {self.topic}. Focus on finding
                     the latest trends, news, and in-depth articles on technology, programming,
-                    and architecture.
+                    and cloud architecture.
 
                     Guidelines:
                     - Do not use special Google search keywords like 'site:', 'inurl:', 'intitle:', etc.
@@ -103,7 +103,7 @@ class TechSageTasks:
                 f"""
                 Generate an insightful article or report based on the latest trends and
                 information about {self.topic}. The content should be engaging, informative,
-                and useful for readers interested in technology, programming, and architecture.
+                and useful for readers interested in technology, programming, and cloud architecture.
 
                 Guidelines:
                 - Provide a compelling introduction to the topic.

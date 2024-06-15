@@ -2,70 +2,84 @@
   <img src="logo.png" alt="TechSage Logo" width="200">
 </p>
 
-# TechSage 🤖
+<h1 align="center">TechSage 🤖</h1>
 
-TechSage is a simple multi-agent LLM platform designed to deliver daily insights on technology, programming, architecture, and more. It utilizes either OpenAI's LLMs or local models via Ollama, ensuring flexibility. Powered by CrewAI's multi-agent system, TechSage automates the retrieval of the latest trends and knowledge given a topic, keeping you informed and ahead in the tech world.
+<p align="center">
+  <i>TechSage is a multi-agent LLM platform delivering daily insights on technology, programming, cloud architecture, and more.</i><br>
+  <i>Utilize OpenAI's LLMs or local models via Ollama, powered by CrewAI's multi-agent system, to stay ahead in the tech world.</i>
+</p>
 
+<p align="center">
+  <a href="#prerequisites">Prerequisites</a> •
+  <a href="#installation">Installation</a> •
+  <a href="#configure">Configure</a> •
+  <a href="#launch">Launch</a> •
+  <a href="#docker">Docker</a>
+</p>
 
+<br>
 
-# Docker 🐋
+## Prerequisites 💡
 
-You can install techsage using the provided docker image:
-
-```bash
-docker run -p 8501:8501 victorgoubet/techsage:latest
-```
-
-and go on 
-
-```
-http://localhost:8501
-```
-
-# Pip 📦
-
-
-## Prerequisites 💡 
-
-- Python >=3.10,<=3.13
+- Python >= 3.10, <= 3.13
 - `ollama` (if using a local model) [install here](https://ollama.com/download/)
+- May need to install the c++ build tool if you don't already have it
 
 ## Installation 🛠️
 
-You can install TechSage via pip:
+To install TechSage, run:
 
 ```bash
-pip install git+https://github.com/VictorGoubet/techsage.git
+pip install https://github.com/VictorGoubet/techsage/archive/refs/tags/v1.tar.gz
 ```
 
+*Replace `v1.0.0` with the release you want to use.*
 
 ## Configure [optional] ⚙️
 
-Execute this command only if you want to use the shell interface and with specific configuration. If you plan to use the streamlit interface you can configure everything directly on it.
+Execute this command only if you want to use the shell interface with specific configuration. For the Streamlit interface, you can configure everything directly within it.
 
 ```bash
 configure-sage
 ```
 
-- `--model <your-model-name>`: The name of the model you want to use (default is `llama3:8b`).
+### Configuration Options:
 
-- `--model_url <your-model-url>`: The api url of the model you want to use (default is `http://localhost:11434/v1`).
-
-- `--verbose <1 or 0>`: The level of verbose you want during the configuration (default is 0).
-
-- `--local <True or False>`: Define if you want to use a local model with Ollama or an OpenAI API model (default is True).
-
-- `--openai_api_key <key>`: Your openai api key. Required if you disabled local mode or if you want to use the crew memory (improve performance).
-
-- `--google_search_api_key <key>`: Your delpha google search api key. If empty a local google search will be perform, however, Google can quickly detect you and ban your IP. Note that only the Delpha Google Search API is supported. Feel free to modify the `api_google_search` method in `tools.py` if you want to use another API. A duckduckgo tool is also available so the agents may use this tools if something is not working with google.
-
+- `--model <your-model-name>`: Name of the model to use (default: `llama3:8b`).
+- `--model_url <your-model-url>`: API URL of the model to use (default: `http://localhost:11434/v1`).
+- `--verbose <1 or 0>`: Verbose level during configuration (default: 0).
+- `--local <True or False>`: Use a local model with Ollama or an OpenAI API model (default: True).
+- `--openai_api_key <key>`: Your OpenAI API key (required if local mode is disabled or using crew memory).
+- `--google_search_api_key <key>`: Delpha Google Search API key. If empty, a local Google search will be performed. Modify `api_google_search` method in `tools.py` to use another API. A DuckDuckGo tool is also available.
 
 ## Launch 🚀
 
-After setting up, launch the script, if you didn't configure anything it will perform the default configuration:
+After setting up, launch the script. If no configuration is provided, the default configuration will be used:
 
 ```sh
 launch-sage
 ```
 
-- `--streamlit <true or false>`: If True the streamlit interface will be used, otherwise a shell interface will appear
+### Launch Options:
+
+- `--streamlit <true or false>`: If `true`, the Streamlit interface will be used; otherwise, a shell interface will appear.
+
+<br>
+
+## Docker 🐋
+
+To install TechSage using the provided Docker image:
+
+```bash
+docker run -d -v ollama:/root/.ollama -p 8501:8501 victorgoubet/techsage:latest
+```
+
+*This will run in CPU only mode. To use GPU, install the [NVIDIA Container Toolkit⁠](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/latest/install-guide.html#installation).*
+
+Then, open your browser and go to:
+
+```bash
+http://localhost:8501
+```
+
+---

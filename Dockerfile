@@ -1,12 +1,26 @@
-FROM python:3.12-slim
-
+FROM ollama/ollama:latest
 WORKDIR /app
-RUN curl -fsSL https://ollama.com/install.sh | sh
+ENV DEBIAN_FRONTEND=noninteractive
 
-RUN pip install git+https://github.com/VictorGoubet/techsage.git
+# Install python 3.12 and build tool
+RUN apt-get update && apt-get install -y \
+    curl \
+    software-properties-common \
+    build-essential \
+    g++ \
+    && add-apt-repository ppa:deadsnakes/ppa \
+    && apt-get update && apt-get install -y \
+    python3.12 \
+    python3.12-venv \
+    python3.12-distutils \
+    && curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py \
+    && python3.12 get-pip.py \
+    && rm -rf /var/lib/apt/lists/*
 
-COPY . /app/
 
+# Install app (default version is v1)
+ARG TAG=v1
+RUN pip install https://github.com/VictorGoubet/techsage/archive/refs/tags/${TAG}.tar.gz
 EXPOSE 8501
 
-CMD ["poetry", "run", "launch-sage"]
+CMD ["launch-sage"]
