@@ -65,20 +65,20 @@ launch-sage
 
 <br>
 
-## Docker (WiP) 🐋
+## Docker 🐋
 
-To install TechSage using the provided Docker image:
+Lazy to setup everything ? Just use the dedicated docker image:
 
 ```bash
 docker run -d -v ollama:/root/.ollama -p 8501:8501 victorgoubet/techsage:latest
 ```
-
-*This will run in CPU only mode. To use GPU, install the [NVIDIA Container Toolkit⁠](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/latest/install-guide.html#installation).*
-
 Then, open your browser and go to:
 
 ```bash
 http://localhost:8501
 ```
+
+*This will run in CPU only mode. To use GPU, install the [NVIDIA Container Toolkit⁠](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/latest/install-guide.html#installation).*
+
 
 ---

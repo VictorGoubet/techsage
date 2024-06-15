@@ -3,7 +3,6 @@ FROM python:3.12-slim as builder
 WORKDIR /app
 ENV DEBIAN_FRONTEND=noninteractive
 
-# Install build tools and compilers
 RUN apt-get update && apt-get install -y \
     git \
     build-essential \
@@ -11,7 +10,9 @@ RUN apt-get update && apt-get install -y \
     curl \
     && rm -rf /var/lib/apt/lists/*
 
-# Install the application package
+# Invalidate cache to force fresh download
+ARG CACHEBUST=1
+
 ARG TAG
 RUN pip install --no-cache-dir https://github.com/VictorGoubet/techsage/archive/refs/tags/${TAG}.tar.gz
 
@@ -22,7 +23,6 @@ FROM ollama/ollama:latest
 WORKDIR /app
 ENV DEBIAN_FRONTEND=noninteractive
 
-# Install Python 3.12 and necessary libraries
 RUN apt-get update && apt-get install -y \
     software-properties-common \
     build-essential \
@@ -38,13 +38,10 @@ RUN apt-get update && apt-get install -y \
     && python3.12 get-pip.py \
     && rm -rf /var/lib/apt/lists/*
 
-# Copy the installed application from the builder stage
 COPY --from=builder /usr/local/lib/python3.12/site-packages /usr/local/lib/python3.12/site-packages
 COPY --from=builder /usr/local/bin /usr/local/bin
 
-# Ensure ollama commands are available in the PATH
 ENV PATH="/usr/local/bin:$PATH"
-# Set PYTHONPATH to include the installed packages
 ENV PYTHONPATH="/usr/local/lib/python3.12/site-packages"
 
 COPY entrypoint.sh /app/entrypoint.sh
