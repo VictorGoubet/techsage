@@ -22,14 +22,17 @@ FROM ollama/ollama:latest
 WORKDIR /app
 ENV DEBIAN_FRONTEND=noninteractive
 
-# Install Python
+# Install Python 3.12 and necessary libraries
 RUN apt-get update && apt-get install -y \
-    curl\
     software-properties-common \
+    build-essential \
+    g++ \
+    curl \
     && add-apt-repository ppa:deadsnakes/ppa \
     && apt-get update && apt-get install -y \
     python3.12 \
     python3.12-venv \
+    python3.12-dev \
     python3.12-distutils \
     && curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py \
     && python3.12 get-pip.py \
@@ -41,7 +44,8 @@ COPY --from=builder /usr/local/bin /usr/local/bin
 
 # Ensure ollama commands are available in the PATH
 ENV PATH="/usr/local/bin:$PATH"
-
+# Set PYTHONPATH to include the installed packages
+ENV PYTHONPATH="/usr/local/lib/python3.12/site-packages"
 
 COPY entrypoint.sh /app/entrypoint.sh
 RUN chmod +x /app/entrypoint.sh
