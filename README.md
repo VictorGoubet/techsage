@@ -66,7 +66,7 @@ launch-sage
 
 <br>
 
-## Docker 🐋
+## Docker (WiP) 🐋
 
 To install TechSage using the provided Docker image:
 

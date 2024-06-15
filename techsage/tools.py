@@ -6,7 +6,7 @@ from urllib.parse import urlencode
 import requests
 from bs4 import BeautifulSoup
 from crewai_tools import tool
-from duckduckgo_search import ddg
+from duckduckgo_search import DDGS
 from lxml import etree
 
 
@@ -50,7 +50,7 @@ def duckduckgo_search_tool(search_value: str) -> str:
     :param str search_value: The value to use as input for the search
     :return Optional[str]: The google HTML results
     """
-    res = "\n".join(ddg(search_value))
+    res = "\n".join(DDGS().text(search_value, max_results=5))
     return res
 
 
