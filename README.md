@@ -5,8 +5,7 @@
 <h1 align="center">TechSage 🤖</h1>
 
 <p align="center">
-  <i>TechSage is a multi-agent LLM platform delivering daily insights on technology, programming, cloud architecture, and more.</i><br>
-  <i>Utilize OpenAI's LLMs or local models via Ollama, powered by CrewAI's multi-agent system, to stay ahead in the tech world.</i>
+  TechSage is a multi-agent LLM platform delivering daily insights on technology, programming, cloud architecture, and more. Utilize OpenAI's LLMs or local models via Ollama, powered by CrewAI's multi-agent system, to stay ahead in the tech world.
 </p>
 
 <p align="center">
