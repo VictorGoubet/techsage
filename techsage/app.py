@@ -4,8 +4,9 @@ from typing import Callable, Union
 
 import streamlit as st
 
+from techsage.agent_core.crew import TechSageCrew
 from techsage.configure import configure
-from techsage.crew import TechSageCrew
+from techsage.utils.constants import DEFAULT_CONFIG
 from techsage.utils.load_config import load_config
 from techsage.utils.tools import ansi_to_html
 
@@ -60,15 +61,17 @@ class TechSageChatApp:
     def _load_current_config(self) -> None:
         """Load the current configuration into the UI"""
         if "model" not in st.session_state:
-            st.session_state["model"] = os.environ.get("BASE_MODEL_NAME", "llama3:8b")
+            st.session_state["model"] = os.environ.get("BASE_MODEL_NAME", DEFAULT_CONFIG["model"])
         if "model_url" not in st.session_state:
-            st.session_state["model_url"] = os.environ.get("OPENAI_API_BASE", "NA")
+            st.session_state["model_url"] = os.environ.get("OPENAI_API_BASE", DEFAULT_CONFIG["model_url"])
         if "openai_key" not in st.session_state:
-            st.session_state["openai_key"] = os.environ.get("OPENAI_API_KEY", "NA")
+            st.session_state["openai_key"] = os.environ.get("OPENAI_API_KEY", DEFAULT_CONFIG["openai_api_key"])
         if "google_key" not in st.session_state:
-            st.session_state["google_key"] = os.environ.get("GOOGLE_SEARCH_API_KEY", "NA")
+            st.session_state["google_key"] = os.environ.get(
+                "GOOGLE_SEARCH_API_KEY", DEFAULT_CONFIG["google_search_api_key"]
+            )
         if "local" not in st.session_state:
-            st.session_state["local"] = os.environ.get("LOCAL", "true").lower() == "true"
+            st.session_state["local"] = os.environ.get("LOCAL", DEFAULT_CONFIG["local"]).lower() == "true"
 
     def _display_chat_history(self) -> None:
         """Display the chat history in the Streamlit app"""

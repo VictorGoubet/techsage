@@ -3,11 +3,11 @@ import os
 import subprocess
 import sys
 from pprint import pprint
-from typing import Optional
+from typing import Any, Optional
 
 import click
 
-from techsage.utils.constants import APP_FOLDER
+from techsage.utils.constants import APP_FOLDER, DEFAULT_CONFIG
 
 VERBOSE = 0
 
@@ -150,12 +150,12 @@ def save_config(
 
 
 def configure(
-    model: str = "llama3:8b",
-    openai_api_key: str = "NA",
-    google_search_api_key: str = "NA",
-    local: str = "true",
-    verbose: int = 0,
-    model_url: str = "http://localhost:11434/v1",
+    model: str = DEFAULT_CONFIG["model"],
+    openai_api_key: str = DEFAULT_CONFIG["openai_api_key"],
+    google_search_api_key: str = DEFAULT_CONFIG["google_search_api_key"],
+    local: str = DEFAULT_CONFIG["local"],
+    verbose: int = DEFAULT_CONFIG["verbose"],
+    model_url: str = DEFAULT_CONFIG["model_url"],
 ) -> None:
     """
     Main function to orchestrate the configuration process: installing dependencies,
@@ -184,17 +184,24 @@ def configure(
 
 
 @click.command()
-@click.option("--model", "-m", default="llama3:8b", help="The name of the model you want to use")
-@click.option("--openai_api_key", "-oak", default="NA", help="Your openai api key")
-@click.option("--google_search_api_key", "-gsak", default="NA", help="Your delpha google search api key")
+@click.option("--model", "-m", default=DEFAULT_CONFIG["model"], help="The name of the model you want to use")
+@click.option("--openai_api_key", "-oak", default=DEFAULT_CONFIG["openai_api_key"], help="Your openai api key")
+@click.option(
+    "--google_search_api_key",
+    "-gsak",
+    default=DEFAULT_CONFIG["google_search_api_key"],
+    help="Your delpha google search api key",
+)
 @click.option(
     "--local",
     "-l",
-    default="true",
+    default=DEFAULT_CONFIG["local"],
     help="Set to True if using a local model with ollama, False for OpenAI API model",
 )
-@click.option("--verbose", "-v", default=0, help="0 to not see configuration details, 1 otherwise")
-@click.option("--model_url", "-mu", default="http://localhost:11434/v1", help="The api url of the model")
+@click.option(
+    "--verbose", "-v", default=DEFAULT_CONFIG["verbose"], help="0 to not see configuration details, 1 otherwise"
+)
+@click.option("--model_url", "-mu", default=DEFAULT_CONFIG["model_url"], help="The api url of the model")
 def main(
     model: str,
     openai_api_key: str,

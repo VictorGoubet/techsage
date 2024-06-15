@@ -1,20 +1,20 @@
 from crewai import Agent
 
-from techsage.llm import llm
-from techsage.tools import google_search_tool, scrap_website_tool
+from techsage.agent_core.llm import llm
+from techsage.agent_core.tools import google_search_tool, scrap_website_tool
 
 
 class TechSageAgents:
     """Definition of all the agents"""
 
     def searcher(self) -> Agent:
-        """An agent dedicated to google search
+        """An agent dedicated to webssearch
 
         :return Agent: The created agent
         """
         return Agent(
             role="Searcher",
-            goal="Find relevant sources of information through Google searches on technology,\
+            goal="Find relevant sources of information through web searches on technology,\
             programming, and cloud architecture.",
             backstory="""
             An experienced internet researcher with a keen eye for relevant sources. You are

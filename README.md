@@ -53,7 +53,7 @@ configure-sage
 
 ## Launch 🚀
 
-After setting up, launch the script. If no configuration is provided, the default configuration will be used:
+After setting up, launch the script with admin rights. If no configuration is provided, the default configuration will be used:
 
 ```sh
 launch-sage
@@ -67,18 +67,21 @@ launch-sage
 
 ## Docker 🐋
 
-Lazy to setup everything ? Just use the dedicated docker image:
+Lazy to setup everything ? Just use the dedicated docker image and go to [http://localhost:8501](http://localhost:8501)
+
+### CPU only
 
 ```bash
 docker run -d -v ollama:/root/.ollama -p 8501:8501 victorgoubet/techsage:latest
 ```
-Then, open your browser and go to:
+
+### Nvidia GPU (Not working for now)
+
+First install the [NVIDIA Container Toolkit⁠](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/latest/install-guide.html#installation).
+For windows you may need to check [Nvidia Cuda on WSL](https://learn.microsoft.com/fr-fr/windows/ai/directml/gpu-cuda-in-wsl) 
 
 ```bash
-http://localhost:8501
+docker run -d --gpus=all -v ollama:/root/.ollama -p 8501:8501 victorgoubet/techsage:latest
 ```
-
-*This will run in CPU only mode. To use GPU, install the [NVIDIA Container Toolkit⁠](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/latest/install-guide.html#installation).*
-
 
 ---

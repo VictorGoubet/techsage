@@ -22,13 +22,13 @@ class TechSageTasks:
         return Task(
             description=dedent(
                 f"""
-                    Search for relevant websites and sources on Google where we could find
+                    Search for relevant websites and sources on the web where we could find
                     accurate and trustworthy information about {self.topic}. Focus on finding
                     the latest trends, news, and in-depth articles on technology, programming,
                     and cloud architecture.
 
                     Guidelines:
-                    - Do not use special Google search keywords like 'site:', 'inurl:', 'intitle:', etc.
+                    - Do not use special search keywords like 'site:', 'inurl:', 'intitle:', etc.
                     - Use simple and direct search queries. For example: "sagemaker tutorial",
                     "latest trends in AI", "Python programming tips".
                     - Prioritize the following sources:

@@ -3,9 +3,9 @@ from typing import Dict
 
 from crewai import Agent, Crew, Process, Task
 
-from techsage.agents import TechSageAgents
-from techsage.llm import llm
-from techsage.tasks import TechSageTasks
+from techsage.agent_core.agents import TechSageAgents
+from techsage.agent_core.llm import llm
+from techsage.agent_core.tasks import TechSageTasks
 
 
 class TechSageCrew:

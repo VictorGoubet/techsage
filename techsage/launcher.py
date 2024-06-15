@@ -7,7 +7,7 @@ from techsage.utils.constants import LIB_FOLDER
 from techsage.utils.load_config import load_config
 
 load_config()
-from techsage.crew import TechSageCrew
+from techsage.agent_core.crew import TechSageCrew
 
 
 @click.command()

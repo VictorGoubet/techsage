@@ -43,7 +43,7 @@ Chrome/96.0.4664.110 Safari/537.36",
         return f"Error scraping website: {e}"
 
 
-@tool("An alternative to google searching tool")
+@tool("DuckDuckGo searching tool")
 def duckduckgo_search_tool(search_value: str) -> str:
     """Perform a duckduckgo search with the given search_value.
 
