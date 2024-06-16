@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="logo.png" alt="TechSage Logo" width="200">
+  <img src="assets/logo.png" alt="TechSage Logo" width="200">
 </p>
 
 <h1 align="center">TechSage 🤖</h1>
@@ -88,5 +88,16 @@ docker run -d --gpus=all -v ollama:/root/.ollama -p 8501:8501 victorgoubet/techs
 ```
 
 *Note: not really stable* 
+
+<br><br>
+
+## App preview
+
+<br>
+
+<p align="center">
+  <img src="assets/app.png" alt="Techsage app">
+</p>
+
 
 ---
