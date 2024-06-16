@@ -1,5 +1,5 @@
 import os
-from typing import Dict
+from typing import Callable, Dict, Optional
 
 from crewai import Agent, Crew, Process, Task
 
@@ -11,19 +11,21 @@ from techsage.agent_core.tasks import TechSageTasks
 class TechSageCrew:
     """Definition of the crew"""
 
-    def __init__(self, topic: str) -> None:
+    def __init__(self, topic: str, add_to_chat: Optional[Callable] = None) -> None:
         """Initialize the crew
 
         :param str topic: The topic on which the crew should work
+        :param Optional[Callable] add_to_chat: A method allowing to send message into the app chat, default None
         """
         self.topic = topic
+        self.add_to_chat = add_to_chat
 
     def _initialize_agents(self) -> dict:
         """Initialize all the agents
 
         :return dict: The created agents
         """
-        agents = TechSageAgents()
+        agents = TechSageAgents(self.add_to_chat)
         return {
             "searcher": agents.searcher(),
             "scraper": agents.scraper(),

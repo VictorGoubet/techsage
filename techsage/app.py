@@ -42,8 +42,8 @@ class TechSageChatApp:
                 st.button("Refresh", on_click=self._load_current_config)
 
         self._display_chat_history()
-        if prompt := st.chat_input("Kubernetes.."):
-            self._send_message(prompt)
+        if prompt := st.chat_input("Authentication services.."):
+            self._run(prompt)
 
     def _save_config(self) -> None:
         """Save the current configuration"""
@@ -90,32 +90,29 @@ class TechSageChatApp:
                     message["message"] = message["message"]()
             st.write(ansi_to_html(message["message"]))
 
-    def _add_to_chat(self, message: Union[str, Callable], is_user: bool = True) -> None:
+    def add_to_chat(self, message: Union[str, Callable], username: str = "You", avatar: str = "🧑‍💻") -> None:
         """Add a message to the chat history and update the UI
 
         :param Union[str, Callable] message: The message to add or the method that will create the message
-        :param bool is_user: Whether the message is from the user or the bot
+        :param str username: The name of the user to display
         """
-        if is_user:
-            message = {"role": "You", "message": message, "avatar": "🧑‍💻"}
-        else:
-            message = {"role": "TechSage", "message": message, "avatar": "🤖"}
-        st.session_state.chat_history.append(message)
-        self._display_message(message)
+        msg = {"role": username, "message": message, "avatar": avatar}
+        st.session_state.chat_history.append(msg)
+        self._display_message(msg)
 
-    def _send_message(self, message: str) -> None:
-        """Send the message that is in the bar
+    def _run(self, topic: str) -> None:
+        """Launch the research on a topic
 
-        :param str message: The message to send
+        :param str topic: The name of the topic
         """
-        if message.strip() != "":
-            self._add_to_chat(message, is_user=True)
+        if topic.strip() != "":
             try:
-                promise = lambda: self.get_topic_info(message)
-                self._add_to_chat(promise, is_user=False)
+                self.add_to_chat(topic)
+                techsage_crew = TechSageCrew(topic, add_to_chat=self.add_to_chat)
+                techsage_crew.run()
             except Exception as e:
                 error_message = f"❌ An error occurred during the search:\n{e}\n{traceback.format_exc()}"
-                self._add_to_chat(error_message, is_user=False)
+                self.add_to_chat(error_message, username="Error bot")
 
     def get_topic_info(self, topic: str) -> str:
         """Get the topic info of the current topic using multi agent system
@@ -123,7 +120,7 @@ class TechSageChatApp:
         :param str topic: The topic value
         :return str: The collected info on the topic
         """
-        techsage_crew = TechSageCrew(topic)
+        techsage_crew = TechSageCrew(topic, add_to_chat=self.add_to_chat)
         result = techsage_crew.run()
         print(result)
         return result
