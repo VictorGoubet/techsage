@@ -23,15 +23,20 @@ jobs:
 
       - name: Extract version tag
         id: extract_tag
-        run: echo "TAG=${GITHUB_REF#refs/tags/}" >> $GITHUB_ENV
+        run: |
+          TAG=${GITHUB_REF#refs/tags/}
+          echo "TAG=$TAG" >> $GITHUB_ENV
+
+      - name: Verify TAG value
+        run: echo "The extracted TAG is ${{ env.TAG }}"
 
       - name: Build and push Docker image
         uses: docker/build-push-action@v2
         with:
           context: .
           push: true
-          build-args:
-            TAG: ${{ env.TAG }}
+          build-args: |
+            TAG=${{ env.TAG }}
           tags: |
             ${{ secrets.DOCKER_USERNAME }}/techsage:${{ env.TAG }}
             ${{ secrets.DOCKER_USERNAME }}/techsage:latest
