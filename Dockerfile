@@ -18,7 +18,7 @@ RUN pip install --no-cache-dir https://github.com/VictorGoubet/techsage/archive/
 
 # ---------------------------------------------------------------------------------------------------------
 
-FROM ollama/ollama:latest
+FROM ollama/ollama:0.1.44
 
 WORKDIR /app
 ENV DEBIAN_FRONTEND=noninteractive

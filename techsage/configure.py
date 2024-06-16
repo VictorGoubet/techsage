@@ -3,7 +3,7 @@ import os
 import subprocess
 import sys
 from pprint import pprint
-from typing import Any, Optional
+from typing import Optional
 
 import click
 
@@ -49,8 +49,8 @@ def pull_model(model_name: str) -> None:
             stderr=output,
         )
         print(" ✅ Base model is ready")
-    except subprocess.CalledProcessError as e:
-        print(f" ❌ Failed to pull model {model_name}: {e}")
+    except subprocess.CalledProcessError:
+        print(f" ❌ Failed to pull model {model_name}, please check if ollama is launched")
         sys.exit(1)
 
 
