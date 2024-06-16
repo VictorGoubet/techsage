@@ -75,13 +75,18 @@ Lazy to setup everything ? Just use the dedicated docker image and go to [http:/
 docker run -d -v ollama:/root/.ollama -p 8501:8501 victorgoubet/techsage:latest
 ```
 
-### Nvidia GPU (Not working for now)
+### Nvidia GPU
 
-First install the [NVIDIA Container Toolkit⁠](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/latest/install-guide.html#installation).
-For windows you may need to check [Nvidia Cuda on WSL](https://learn.microsoft.com/fr-fr/windows/ai/directml/gpu-cuda-in-wsl) 
+First install GPU drivers for docker:
+
+**Linux**: [NVIDIA Container Toolkit⁠](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/latest/install-guide.html#installation).
+**Windows**: [Nvidia Cuda on WSL](https://learn.microsoft.com/fr-fr/windows/ai/directml/gpu-cuda-in-wsl) 
+**Mac**: *Not supported*
 
 ```bash
 docker run -d --gpus=all -v ollama:/root/.ollama -p 8501:8501 victorgoubet/techsage:latest
 ```
+
+*Note: not really stable* 
 
 ---

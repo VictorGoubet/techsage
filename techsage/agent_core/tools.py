@@ -23,7 +23,7 @@ def scrap_website_tool(website_url: str) -> str:
             timeout=15,
             headers={
                 "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko)\
-Chrome/96.0.4664.110 Safari/537.36",
+ Chrome/96.0.4664.110 Safari/537.36",
                 "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng\
 ,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9",
                 "Accept-Language": "en-US,en;q=0.9",
@@ -50,7 +50,7 @@ def duckduckgo_search_tool(search_value: str) -> str:
     :param str search_value: The value to use as input for the search
     :return Optional[str]: The google HTML results
     """
-    res = "\n".join(DDGS().text(search_value, max_results=5))
+    res = "\n".join([str(x) for x in DDGS().text(search_value, max_results=5)])
     return res
 
 
@@ -79,7 +79,8 @@ def local_google_search(url: str) -> str:
     """
     try:
         headers = {
-            "User-Agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/112.0.0.0 Safari/537.36",
+            "User-Agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko)\
+ Chrome/112.0.0.0 Safari/537.36",
             "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
             "Accept-Language": "en-US,en;q=0.5",
             "Accept-Encoding": "gzip, deflate",
