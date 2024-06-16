@@ -10,7 +10,7 @@ from duckduckgo_search import DDGS
 from lxml import etree
 
 
-@tool("Scraping tool")
+# @tool("Scraping tool")
 def scrap_website_tool(website_url: str) -> str:
     """Scrap the content of a website
 
@@ -18,6 +18,7 @@ def scrap_website_tool(website_url: str) -> str:
     :return str: The HTML dom of the scraped website
     """
     try:
+        website_url = website_url.replace('"', "")
         page = requests.get(
             website_url,
             timeout=15,

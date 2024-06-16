@@ -50,7 +50,7 @@ def pull_model(model_name: str) -> None:
         )
         print(" ✅ Base model is ready")
     except subprocess.CalledProcessError:
-        print(f" ❌ Failed to pull model {model_name}, please check if ollama is launched")
+        print(f" ❌ Failed to pull model {model_name}, check if it exists and if ollama is launched")
         sys.exit(1)
 
 
