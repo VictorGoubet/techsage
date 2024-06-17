@@ -10,7 +10,7 @@ from duckduckgo_search import DDGS
 from lxml import etree
 
 
-# @tool("Scraping tool")
+@tool("Scraping tool")
 def scrap_website_tool(website_url: str) -> str:
     """Scrap the content of a website
 
