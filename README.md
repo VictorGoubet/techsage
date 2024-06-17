@@ -9,11 +9,11 @@
 </p>
 
 <p align="center">
-  <a href="#prerequisites">Prerequisites</a> •
-  <a href="#installation">Installation</a> •
-  <a href="#configure">Configure</a> •
-  <a href="#launch">Launch</a> •
-  <a href="#docker">Docker</a>
+  <a href="#prerequisites-">Prerequisites</a> •
+  <a href="#installation-%EF%B8%8F">Installation</a> •
+  <a href="#configure-optional-%EF%B8%8F">Configure</a> •
+  <a href="#launch-">Launch</a> •
+  <a href="#docker-">Docker</a>
 </p>
 
 <br>
@@ -32,7 +32,7 @@ To install TechSage, run:
 pip install https://github.com/VictorGoubet/techsage/archive/refs/tags/v1.tar.gz
 ```
 
-*Replace `v1.0.0` with the release you want to use.*
+*Replace `v1` with the release you want to use.*
 
 ## Configure [optional] ⚙️
 
@@ -79,15 +79,15 @@ docker run -d -v ollama:/root/.ollama -p 8501:8501 victorgoubet/techsage:latest
 
 First install GPU drivers for docker:
 
-**Linux**: [NVIDIA Container Toolkit⁠](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/latest/install-guide.html#installation).
-**Windows**: [Nvidia Cuda on WSL](https://learn.microsoft.com/fr-fr/windows/ai/directml/gpu-cuda-in-wsl) 
-**Mac**: *Not supported*
+- **Linux**: [NVIDIA Container Toolkit⁠](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/latest/install-guide.html#installation).  
+- **Windows**: [Nvidia Cuda on WSL](https://learn.microsoft.com/fr-fr/windows/ai/directml/gpu-cuda-in-wsl)  
+- **Mac**: *Not supported*  
 
 ```bash
 docker run -d --gpus=all -v ollama:/root/.ollama -p 8501:8501 victorgoubet/techsage:latest
 ```
 
-*Note: not really stable* 
+*Note: GPU version not really stable* 
 
 <br><br>
 
