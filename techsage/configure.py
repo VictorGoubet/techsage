@@ -6,6 +6,7 @@ from pprint import pprint
 from typing import Optional
 
 import click
+import psutil
 
 from techsage.utils.constants import APP_FOLDER, DEFAULT_CONFIG
 
@@ -16,6 +17,23 @@ def create_app_folder() -> None:
     """Create the folder of techsage if not existing"""
     os.makedirs(APP_FOLDER, exist_ok=True)
     os.makedirs(f"{APP_FOLDER}/models", exist_ok=True)
+
+
+def check_ollama_running() -> None:
+    """
+    Check if 'ollama' is currently running.
+
+    :raises RuntimeError: If 'ollama' is not running.
+    """
+    try:
+        for process in psutil.process_iter(["name"]):
+            if process.info["name"].lower() == "ollama":
+                print(" ✅ Ollama is running.")
+                return
+        raise RuntimeError("Ollama is not running.")
+    except Exception as e:
+        print(f" ❌ {str(e)}")
+        sys.exit(1)
 
 
 def check_ollama_installed() -> None:
@@ -43,6 +61,7 @@ def pull_model(model_name: str) -> None:
     """
     try:
         output = None if VERBOSE else subprocess.DEVNULL
+        print(" ⏳ Pulling model...")
         subprocess.check_call(
             ["ollama", "pull", model_name],
             stdout=output,
@@ -50,7 +69,7 @@ def pull_model(model_name: str) -> None:
         )
         print(" ✅ Base model is ready")
     except subprocess.CalledProcessError:
-        print(f" ❌ Failed to pull model {model_name}, check if it exists and if ollama is launched")
+        print(f" ❌ Failed to pull model {model_name}, check if it exists on ollama website")
         sys.exit(1)
 
 
@@ -175,6 +194,7 @@ def configure(
     create_app_folder()
     if local:
         check_ollama_installed()
+        check_ollama_running()
         model_config_file_path = create_model_file(model, f"{APP_FOLDER}/models/")
         pull_model(model)
         crewai_model_name = create_model(f"{model}_crewai", model_config_file_path)

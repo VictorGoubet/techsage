@@ -55,9 +55,12 @@ configure-sage
 
 After setting up, launch the script with admin rights. If no configuration is provided, the default configuration will be used:
 
+
 ```sh
 launch-sage
 ```
+
+**Note**: Be sure to have **ollama running** if you intend to use local models
 
 ### Launch Options:
 
